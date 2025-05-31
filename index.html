@@ -50,6 +50,11 @@
             border: 1px solid #eee;
             border-radius: 4px;
         }
+        #qrCodeDisplay {
+            margin: 20px auto 0;
+            text-align: center;
+            padding-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -60,14 +65,15 @@
         <div id="qrCodeDisplay">
             <img id="qrCodeImage" src="" alt="QR Code" style="display: none;">
         </div>
+        <button id="downloadBtn" style="display: none; margin-top: 10px;" onclick="downloadQrCode()">Download QR Code (PNG)</button>
     </div>
 
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script>
         function generateQrCode() {
             const url = document.getElementById('urlInput').value;
-            const qrCodeImage = document.getElementById('qrCodeImage');
             const qrCodeDisplay = document.getElementById('qrCodeDisplay');
+            const downloadBtn = document.getElementById('downloadBtn');
 
             if (url) {
                 qrCodeDisplay.innerHTML = ''; // Clear previous QR code
@@ -79,9 +85,24 @@
                     colorLight : "#ffffff",
                     correctLevel : QRCode.CorrectLevel.H
                 });
-                qrCodeImage.style.display = 'none'; // Hide the img tag as qrcode.js creates a canvas/table
+                downloadBtn.style.display = 'block'; // Show download button
             } else {
                 alert('Please enter a URL.');
+                downloadBtn.style.display = 'none'; // Hide download button if no URL
+            }
+        }
+
+        function downloadQrCode() {
+            const qrCodeDisplay = document.getElementById('qrCodeDisplay');
+            const qrCodeCanvas = qrCodeDisplay.querySelector('canvas');
+
+            if (qrCodeCanvas) {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = qrCodeCanvas.toDataURL('image/png');
+                link.click();
+            } else {
+                alert('No QR code generated yet.');
             }
         }
     </script>
